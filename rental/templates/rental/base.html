@@ -1,0 +1,40 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Прокат инструментов{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'rental/style.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container header-inner">
+            <a class="brand" href="{% url 'rental:tool_list' %}">
+                <span class="brand-mark">П</span>
+                <span class="brand-copy">
+                    <strong>Прокат</strong>
+                    <small>инструментов</small>
+                </span>
+            </a>
+
+            <nav class="main-nav">
+                <a href="{% url 'rental:tool_list' %}">Каталог</a>
+                <a href="{% url 'rental:availability' %}">Доступность</a>
+                <a href="{% url 'rental:calculator' %}">Расчёт аренды</a>
+                <a href="/admin/">Админка</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            Учебный проект Django · локальная версия
+        </div>
+    </footer>
+</body>
+</html>

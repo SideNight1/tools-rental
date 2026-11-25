@@ -1,0 +1,6 @@
+Django>=5.2,<5.3
+psycopg[binary]>=3,<4
+python-dotenv
+django-debug-toolbar
+Faker
+locust

@@ -1,0 +1,42 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Расчёт аренды{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>Расчёт аренды и штрафа</h1>
+    <p>Выбери инструмент и даты — сайт рассчитает стоимость аренды и возможную просрочку.</p>
+</div>
+
+<form class="form-card" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Рассчитать</button>
+        <a class="btn btn-secondary" href="{% url 'rental:calculator' %}">
+            Сбросить
+        </a>
+    </div>
+</form>
+
+{% if result %}
+    <section class="result-card">
+        <h2>Результат расчёта</h2>
+
+        <p>Оплачиваемых дней: <strong>{{ result.rental_days }}</strong></p>
+        <p>Стоимость аренды: <strong>{{ result.rental_cost|floatformat:2 }}</strong></p>
+        <p>Дней просрочки: <strong>{{ result.late_days }}</strong></p>
+        <p>Штраф за просрочку: <strong>{{ result.late_fee|floatformat:2 }}</strong></p>
+
+        <p class="result-total">
+            Итого: {{ result.total|floatformat:2 }}
+        </p>
+
+        <p class="muted">
+            Суммы показаны без обозначения валюты: в задании валюта не указана.
+            День начала и день окончания считаются оплачиваемыми.
+        </p>
+    </section>
+{% endif %}
+{% endblock %}

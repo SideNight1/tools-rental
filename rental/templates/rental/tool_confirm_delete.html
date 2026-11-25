@@ -1,0 +1,22 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Удалить инструмент{% endblock %}
+
+{% block content %}
+<section class="form-card">
+    <div class="page-heading">
+        <h1>Удалить инструмент?</h1>
+        <p>Инструмент «{{ tool.name }}» будет удалён из каталога.</p>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="form-actions">
+            <button class="btn btn-danger" type="submit">Да, удалить</button>
+            <a class="btn btn-secondary" href="{% url 'rental:tool_list' %}">
+                Отмена
+            </a>
+        </div>
+    </form>
+</section>
+{% endblock %}

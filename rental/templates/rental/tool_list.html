@@ -1,0 +1,148 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Каталог инструментов{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="page-heading">
+        <h1>Инструменты для дела</h1>
+        <p>Выбери инструмент, отфильтруй каталог или проверь доступность на нужные даты.</p>
+    </div>
+
+    <div class="toolbar">
+        <a class="btn btn-primary" href="{% url 'rental:availability' %}">
+            Проверить доступность
+        </a>
+        <a class="btn btn-secondary" href="{% url 'rental:calculator' %}">
+            Рассчитать стоимость
+        </a>
+        {% if user.is_authenticated %}
+            <a class="btn btn-secondary" href="{% url 'rental:tool_create' %}">
+                Добавить инструмент
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<form class="filter-form" method="get">
+    <div class="field">
+        <label for="search">Поиск</label>
+        <input
+            id="search"
+            type="search"
+            name="q"
+            value="{{ search_text }}"
+            placeholder="Название или описание"
+        >
+    </div>
+
+    <div class="field">
+        <label for="category">Категория</label>
+        <select id="category" name="category">
+            <option value="">Все категории</option>
+            {% for category in categories %}
+                <option
+                    value="{{ category.pk }}"
+                    {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}
+                >
+                    {{ category.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+
+    <div class="field">
+        <label for="status">Статус</label>
+        <select id="status" name="status">
+            <option value="">Любой статус</option>
+            <option value="active" {% if selected_status == "active" %}selected{% endif %}>
+                Активные
+            </option>
+            <option value="inactive" {% if selected_status == "inactive" %}selected{% endif %}>
+                Скрытые
+            </option>
+        </select>
+    </div>
+
+    <div class="toolbar">
+        <button class="btn btn-primary" type="submit">Применить</button>
+        <a class="btn btn-secondary" href="{% url 'rental:tool_list' %}">Сбросить</a>
+    </div>
+</form>
+
+<p class="muted">
+    Инструментов найдено: {{ page_obj.paginator.count }}
+</p>
+
+{% if tools %}
+    <section class="tools-grid">
+        {% for tool in tools %}
+            <article class="tool-card">
+                <div class="toolbar">
+                    <span class="badge {% if tool.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+                        {% if tool.is_active %}В каталоге{% else %}Скрыт{% endif %}
+                    </span>
+                    <span class="muted">{{ tool.category.name }}</span>
+                </div>
+
+                <h2>{{ tool.name }}</h2>
+                <p>{{ tool.description|truncatewords:30 }}</p>
+
+                <p class="price">
+                    {{ tool.daily_rate }} <span class="muted">за день</span>
+                </p>
+
+                <p class="muted">Добавил: {{ tool.created_by.get_username }}</p>
+
+                {% with tags=tool.tags.all %}
+                    {% if tags %}
+                        <div>
+                            {% for tag in tags %}
+                                <span class="tag">{{ tag.name }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                {% endwith %}
+
+                {% if user.is_authenticated %}
+                    <div class="card-actions">
+                        <a class="btn btn-secondary" href="{% url 'rental:tool_update' tool.pk %}">
+                            Изменить
+                        </a>
+                        <a class="btn btn-secondary" href="{% url 'rental:tool_delete' tool.pk %}">
+                            Удалить
+                        </a>
+                    </div>
+                {% endif %}
+            </article>
+        {% endfor %}
+    </section>
+{% else %}
+    <section class="empty-state">
+        <h2>Инструменты не найдены</h2>
+        <p class="muted">Попробуй изменить условия поиска или сбросить фильтры.</p>
+    </section>
+{% endif %}
+
+{% if page_obj.paginator.num_pages > 1 %}
+    <nav class="pagination" aria-label="Страницы каталога">
+        {% if page_obj.has_previous %}
+            <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page=1">Первая</a>
+            <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">
+                Назад
+            </a>
+        {% endif %}
+
+        <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+
+        {% if page_obj.has_next %}
+            <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.next_page_number }}">
+                Вперёд
+            </a>
+            <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.paginator.num_pages }}">
+                Последняя
+            </a>
+        {% endif %}
+    </nav>
+{% endif %}
+{% endblock %}

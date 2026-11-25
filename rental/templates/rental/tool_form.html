@@ -1,0 +1,29 @@
+{% extends "rental/base.html" %}
+
+{% block title %}
+    {% if tool %}Изменить инструмент{% else %}Добавить инструмент{% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    {% if tool %}
+        <h1>Изменить инструмент</h1>
+        <p>Обнови информацию о «{{ tool.name }}».</p>
+    {% else %}
+        <h1>Добавить инструмент</h1>
+        <p>Заполни карточку инструмента для каталога.</p>
+    {% endif %}
+</div>
+
+<form class="form-card" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">Сохранить</button>
+        <a class="btn btn-secondary" href="{% url 'rental:tool_list' %}">
+            Отмена
+        </a>
+    </div>
+</form>
+{% endblock %}

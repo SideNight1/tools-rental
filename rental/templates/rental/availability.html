@@ -1,0 +1,85 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Проверка доступности{% endblock %}
+
+{% block content %}
+<div class="page-heading">
+    <h1>Проверка доступности</h1>
+    <p>Укажи даты — сайт покажет инструменты, свободные на весь этот период.</p>
+</div>
+
+<form class="form-card" method="get">
+    {{ form.as_p }}
+
+    <div class="form-actions">
+        <button class="btn btn-primary" type="submit">
+            Найти свободные инструменты
+        </button>
+        <a class="btn btn-secondary" href="{% url 'rental:availability' %}">
+            Сбросить
+        </a>
+    </div>
+</form>
+
+{% if form.is_bound and form.is_valid %}
+    <section class="panel" style="margin-top: 24px;">
+        <h2>Результат проверки</h2>
+
+        {% if page_obj.paginator.count %}
+            <p class="muted">
+                Свободных инструментов найдено:
+                {{ page_obj.paginator.count }}
+            </p>
+
+            <div class="tools-grid">
+                {% for tool in available_tools %}
+                    <article class="tool-card">
+                        <span class="badge badge-active">
+                            Свободен на выбранные даты
+                        </span>
+                        <p class="muted">{{ tool.category.name }}</p>
+                        <h3>{{ tool.name }}</h3>
+                        <p>{{ tool.description|truncatewords:25 }}</p>
+                        <p class="price">
+                            {{ tool.daily_rate }}
+                            <span class="muted">за день</span>
+                        </p>
+                    </article>
+                {% endfor %}
+            </div>
+
+            {% if page_obj.paginator.num_pages > 1 %}
+                <nav class="pagination" aria-label="Страницы доступных инструментов">
+                    {% if page_obj.has_previous %}
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page=1">
+                            Первая
+                        </a>
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">
+                            Назад
+                        </a>
+                    {% endif %}
+
+                    <span>
+                        Страница {{ page_obj.number }}
+                        из {{ page_obj.paginator.num_pages }}
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.next_page_number }}">
+                            Вперёд
+                        </a>
+                        <a href="?{% if query_string %}{{ query_string }}&amp;{% endif %}page={{ page_obj.paginator.num_pages }}">
+                            Последняя
+                        </a>
+                    {% endif %}
+                </nav>
+            {% endif %}
+        {% else %}
+            <div class="empty-state">
+                <h3>Свободных инструментов не найдено</h3>
+                <p class="muted">Попробуй выбрать другие даты.</p>
+            </div>
+        {% endif %}
+    </section>
+{% endif %}
+{% endblock %}

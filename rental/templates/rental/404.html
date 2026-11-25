@@ -1,0 +1,16 @@
+{% extends "rental/base.html" %}
+
+{% block title %}Страница не найдена{% endblock %}
+
+{% block content %}
+<section class="empty-state">
+    <div class="page-heading">
+        <h1>Такой страницы нет</h1>
+        <p>Возможно, адрес устарел или был введён с ошибкой.</p>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'rental:tool_list' %}">
+        Вернуться в каталог
+    </a>
+</section>
+{% endblock %}
