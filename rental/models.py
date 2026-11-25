@@ -54,7 +54,19 @@ class Tool(models.Model):
     )
     created_at = models.DateTimeField("Дата создания", auto_now_add=True)
     updated_at = models.DateTimeField("Дата изменения", auto_now=True)
-
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=["category", "name", "id"],
+                condition=models.Q(is_active=True),
+                name="tool_act_cat_name_id",
+            ),
+            models.Index(
+                fields=["name", "id"],
+                condition=models.Q(is_active=True),
+                name="tool_act_name_id",
+            ),
+        ]
     def __str__(self):
         return self.name
 
