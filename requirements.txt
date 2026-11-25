@@ -4,3 +4,4 @@ python-dotenv
 django-debug-toolbar
 Faker
 locust
+locust==2.47.0
