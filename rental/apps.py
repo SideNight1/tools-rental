@@ -6,4 +6,4 @@ class RentalConfig(AppConfig):
     name = "rental"
 
     def ready(self):
-        from . import signals
+        from . import signals # noqa: F401
