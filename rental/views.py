@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import AvailabilityForm, CostCalculatorForm, ToolForm
 from .models import Category, Tool
 from .services import calculate_rental_amounts, get_available_tools
-
+from .cache_utils import get_category_stats
 
 def tool_list(request):
     search_text = request.GET.get("q", "").strip()
@@ -52,7 +52,7 @@ def tool_list(request):
         {
             "tools": page_obj.object_list,
             "page_obj": page_obj,
-            "categories": Category.objects.order_by("name"),
+            "categories": get_category_stats(),
             "search_text": search_text,
             "selected_category": category_id,
             "selected_status": status,

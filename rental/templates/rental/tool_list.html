@@ -41,13 +41,13 @@
         <select id="category" name="category">
             <option value="">Все категории</option>
             {% for category in categories %}
-                <option
-                    value="{{ category.pk }}"
-                    {% if selected_category == category.pk|stringformat:"s" %}selected{% endif %}
-                >
-                    {{ category.name }}
-                </option>
-            {% endfor %}
+    <option
+        value="{{ category.id }}"
+        {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}
+    >
+        {{ category.name }} ({{ category.tool_count }})
+    </option>
+{% endfor %}
         </select>
     </div>
 
@@ -58,7 +58,14 @@
             <option value="active" {% if selected_status == "active" %}selected{% endif %}>
                 Активные
             </option>
-            <option value="inactive" {% if selected_status == "inactive" %}selected{% endif %}>
+           {% for category in categories %}
+    <option
+        value="{{ category.id }}"
+        {% if selected_category == category.id|stringformat:"s" %}selected{% endif %}
+    >
+        {{ category.name }} ({{ category.tool_count }})
+    </option>
+{% endfor %}
                 Скрытые
             </option>
         </select>
